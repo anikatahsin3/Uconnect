@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counseling Checker</title>
+
+    <!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container mt-3">
+        <table class="table table-dark">
+            <thead>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Active Status</th>
+                <th>Room No:</th>
+                <th>Counseling Time Start</th>
+                <th>Counseling Time End</th>
+            </thead>
+            <tbody id="tbody1"></tbody>
+        </table>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-auth.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database.js"></script>
+
+
+    <script type="module">
+        var tNo = 0;
+        var tbody = document.getElementById('tbody1');
+
+        function AddItemToTable(id, name, active_status, room_no, ct_s, ct_e){
+            let trow = document.getElement("tr");
+            let td1 = document.createElement("td");
+            let td2 = document.createElement("td");
+            let td3 = document.createElement("td");
+            let td4 = document.createElement("td");
+            let td5 = document.createElement("td");
+            let td6 = document.createElement("td");
+            let td7 = document.createElement("td");
+
+            td1.innerHTML= ++teNo;
+            td2.innerHTML= id;
+            td3.innerHTML= name;
+            td4.innerHTML= active_status;
+            td5.innerHTML= room_no;
+            td6.innerHTML= ct_s;
+            td7.innerHTML= ct_e;
+
+            trow.appendChild(td1);
+            trow.appendChild(td2);
+            trow.appendChild(td3);
+            trow.appendChild(td4);
+            trow.appendChild(td5);
+            trow.appendChild(td6);
+            trow.appendChild(td7);
+
+
+            tbody.appendChild(trow);
+
+        }
+
+        function AddAllItemsToTable(TheTeacher){
+            teacherNo=0;
+            tbody.innerHTML="";
+            TheTeacher.forEach(element =>{
+                AddItemToTable(element.id, element.name, element.active_status, element.room_no, element.ct_s, element.ct_e);
+            });
+        }
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";        
+        const firebaseConfig = {
+            apiKey: "AIzaSyDXBz2mObt-tV1npnKkyRhXf5LGaMjPbk4",
+            authDomain: "esp32-firebase-demo-a2731.firebaseapp.com",
+            databaseURL: "https://esp32-firebase-demo-a2731-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "esp32-firebase-demo-a2731",
+            storageBucket: "esp32-firebase-demo-a2731.appspot.com",
+            messagingSenderId: "348114550644",
+            appId: "1:348114550644:web:0ccf1976c11079a20f7621",
+            measurementId: "G-XTG08J87CE"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+
+        import { getDatabase, ref, child, onValue, get}
+        from "https://www.gstatic.com/firebasejs/9.10.0/firebase-database.js";
+
+        const db = getDatabase();
+
+//--------------------------------------------------------------------------------------
+        
+        function GetAllDataOnce(){
+            const dbRef = ref(db);
+
+            get(child(dbRef, "teacher"))
+            .then((snapshot)=>{
+
+                var teachers =[];
+
+                snapshot.forEach(childSnapshot => {
+                    teachers.push(childSnapshot.val());
+                });
+
+                AddAllItemsToTable(teachers);
+            });
+        }
+
+        window.onload = GetAllDataOnce;
+
+    </script>
+    
+    
+</body>
+</html>
